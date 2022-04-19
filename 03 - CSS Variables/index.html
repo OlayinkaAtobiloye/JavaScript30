@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Scoped CSS Variables and JS</title>
 </head>
+
 <body>
   <h2>Update CSS Variables with <span class='hl'>JS</span></h2>
 
@@ -21,6 +23,9 @@
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
+    /*
+      misc styles, nothing to do with CSS variables
+    */
     :root {
       --base: #ffc600;
       --spacing: 10px;
@@ -36,10 +41,6 @@
     .hl {
       color: var(--base);
     }
-
-    /*
-      misc styles, nothing to do with CSS variables
-    */
 
     body {
       text-align: center;
@@ -60,17 +61,19 @@
   </style>
 
   <script>
-    const inputs = document.querySelectorAll('.controls input');
 
-    function handleUpdate() {
+    function handleChange() {
+      const value = this.value;
       const suffix = this.dataset.sizing || '';
-      document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix);
+      const variable = this.name;
+      document.documentElement.style.setProperty(`--${variable}`, `${value}${suffix}`)
     }
 
-    inputs.forEach(input => input.addEventListener('change', handleUpdate));
-    inputs.forEach(input => input.addEventListener('mousemove', handleUpdate));
+    const inputs = document.querySelectorAll('.controls input')
+    inputs.forEach(input => input.addEventListener('change', handleChange))
+    inputs.forEach(input => input.addEventListener('mousemove', handleChange))
   </script>
 
-
 </body>
+
 </html>

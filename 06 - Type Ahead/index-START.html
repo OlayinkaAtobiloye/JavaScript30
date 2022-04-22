@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Type Ahead 👀</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
   <form class="search-form">
@@ -14,9 +16,46 @@
       <li>or a state</li>
     </ul>
   </form>
-<script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+  <script>
+    let cities = []
+    const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+    fetch(endpoint).then(
+      blob => blob.json().then(data =>
+        cities = data
+      )
+    )
 
-</script>
+    function numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    const displayMatches = (e) => {
+      suggestions.innerHTML = ''
+      const tofind = e.currentTarget.value;
+      places = findMatches(tofind);
+      const html = places.map(place => {
+        const regex = new RegExp(tofind, 'gi')
+        return `<li>
+      <span class="name">${place.city.replace(regex, `<span class="hl">${tofind}</span>`)}, ${place.state.replace(regex, `<span class="hl">${tofind}</span>`)}</span>
+        <span class="population">${numberWithCommas(place.population)}</span></li>`
+      }
+      )
+      suggestions.innerHTML = html
+    }
+
+    const findMatches = (tofind) => {
+      const regex = new RegExp(tofind, 'gi')
+      return cities.filter(
+        city => city.city.match(regex) || city.state.match(regex)
+      )
+    }
+
+    const suggestions = document.querySelector('.suggestions')
+    const input = document.querySelector(".search")
+    input.addEventListener("change", displayMatches)
+    input.addEventListener("keydown", displayMatches)
+
+  </script>
 </body>
+
 </html>
